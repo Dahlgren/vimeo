@@ -22,7 +22,7 @@ module CreateApiMethod
     optional = options[:optional].map { |o| ":#{o} => nil" }.join(",")
     authorized = options.fetch(:authorized, true)
 
-    parameters = "(#{required unless required.empty?}#{',' unless required.empty?}options={#{optional}})"
+    parameters = "(#{required unless required.empty?}#{',' unless required.empty?}options={#{optional}},authorized=#{authorized ? "true" : "false"})"
 
     method_string = <<-method
 
@@ -37,7 +37,7 @@ module CreateApiMethod
         #{ options[:required].map { |r| "sig_options.merge! :#{r} => #{r}"}.join("\n") }
         #{ options[:optional].map { |o| "sig_options.merge! :#{o} => options[:#{o}] unless options[:#{o}].nil?" }.join("\n") }
 
-        make_request sig_options, #{authorized ? "true" : "false"}
+        make_request sig_options, authorized
       end
 
       alias #{camelized_method} #{method}
